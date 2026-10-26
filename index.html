@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Lluvia de Pixeles - Teclado</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lluvia de Pixeles</title>
 <style>
   * { box-sizing: border-box; }
   body {
@@ -22,6 +23,8 @@
     gap: 20px;
     flex-wrap: wrap;
     justify-content: center;
+    width: 100%;
+    max-width: 668px;
   }
   .panel {
     background: #ffffff;
@@ -30,10 +33,17 @@
     padding: 12px;
     box-shadow: 3px 3px 0 #222;
   }
+  .game-panel {
+    width: min(100%, 428px);
+  }
   #gameCanvas {
     background: #ffffff;
     display: block;
+    width: 100%;
+    height: auto;
     border-radius: 6px;
+    touch-action: manipulation;
+    cursor: pointer;
   }
   .header {
     display: flex;
@@ -207,12 +217,37 @@
     margin-top: 16px;
     width: 100%;
   }
+  @media (max-width: 600px) {
+    body {
+      padding: 12px;
+    }
+    .wrapper {
+      gap: 12px;
+    }
+    .game-panel,
+    .letters-panel {
+      width: 100%;
+    }
+    .letters-panel {
+      max-height: 300px;
+    }
+    #lettersBox {
+      min-height: 100px;
+    }
+    button {
+      min-height: 40px;
+    }
+    .info-btn {
+      width: 40px;
+      height: 40px;
+    }
+  }
 </style>
 </head>
 <body tabindex="0" id="body">
 
 <div class="wrapper">
-  <div class="panel">
+  <div class="panel game-panel">
     <div class="header">
       <span>Puntaje: <span id="score">0</span></span>
       <div style="display:flex; gap:8px; align-items:center;">
@@ -223,9 +258,9 @@
         <button id="restartBtn">Reiniciar</button>
       </div>
     </div>
-    <canvas id="gameCanvas" width="400" height="520"></canvas>
+    <canvas id="gameCanvas" width="400" height="520" aria-label="Área de juego. Toca o haz clic para generar un pixel."></canvas>
     <div id="status"></div>
-    <div id="hint">Presiona cualquier tecla para generar un pixel</div>
+    <div id="hint">Presiona una tecla o toca el área de juego para generar un pixel</div>
   </div>
 
   <div class="panel letters-panel">
@@ -414,6 +449,12 @@ window.addEventListener('keydown', (e) => {
   if (modalOverlay.classList.contains('open')) return;
   // evitar que la barra espaciadora haga scroll de la pagina
   if (e.code === 'Space') e.preventDefault();
+  spawnPixel();
+});
+
+canvas.addEventListener('pointerdown', (e) => {
+  if (modalOverlay.classList.contains('open')) return;
+  if (e.button !== 0) return;
   spawnPixel();
 });
 
